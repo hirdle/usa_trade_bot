@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+# app.db
+# bill_data.txt
+# channels.json
+# channels.json.lock
