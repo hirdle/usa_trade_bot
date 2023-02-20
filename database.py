@@ -29,7 +29,7 @@ def get_data_channels():
     all_channels = database_json.getAll()
     return all_channels
 
-def get_text_channels():
+def get_text_channels(mode=0):
 
     all_text_channels = "Нет активных чатов."
 
@@ -39,8 +39,10 @@ def get_text_channels():
 
         all_text_channels = ""
         for channel in all_list_channels:
-
-            all_text_channels += "Имя: {0} Id: <code>{1}</code>\nСсылка: {2}".format(channel['name'], channel['id_discord'], channel['link'])
+            if mode == 1:
+                all_text_channels += "Имя: {0}\nСсылка: {1}\n".format(channel['name'], channel['link'])
+            else:
+                all_text_channels += "Имя: {0} Id: <code>{1}</code>\nСсылка: {2}\n".format(channel['name'], channel['id_discord'], channel['link'])
     
     return all_text_channels
 

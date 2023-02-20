@@ -39,7 +39,7 @@ def gen_markup(keyboard_data={}, back_button=True, keyboard_link_data={}):
 
     return markup
 
-start_keyboard = lambda: gen_markup({"Подписка": "subscription"}, back_button=False, keyboard_link_data={'Тех. поддержка': 't.me/greentradealert'})
+start_keyboard = lambda: gen_markup({"Подписка": "subscription", "Каналы": "channels"}, back_button=False, keyboard_link_data={'Тех. поддержка': 't.me/greentradealert'})
 
 
 def get_now_date():
@@ -151,6 +151,9 @@ def callback_query(call):
 
     if call.data == "start":
         edit_call_message(call, text=config.start_text, reply_markup=start_keyboard())
+
+    elif call.data == "channels":
+        edit_call_message(call, text="Все доступные каналы:\n" + database.get_text_channels(1), reply_markup=gen_markup({}))
 
     elif call.data == "subscription":
 
