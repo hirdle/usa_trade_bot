@@ -5,16 +5,18 @@ import config
 
 
 def get_messages(token, channel_id):
-    
-    headers = {
-        'authorization': token
-    }
 
-    r = requests.get(f'https://discord.com/api/v9/channels/{channel_id}/messages?limit=3', headers=headers)
-    data = r.json()
+    try:
     
-    return data
+        headers = {
+            'authorization': token
+        }
 
+        r = requests.get(f'https://discord.com/api/v9/channels/{channel_id}/messages?limit=3', headers=headers)
+        data = r.json()
+        return data
+        
+    except: return False
 
 def get_new_messages(bot, token, channel_id_discord, channel_id_telegram, handler):
 
@@ -25,13 +27,16 @@ def get_new_messages(bot, token, channel_id_discord, channel_id_telegram, handle
 
         now_value = get_messages(token=token, channel_id=channel_id_discord)
 
+        if now_value == False:
+            now_value = prev_value
+
         if now_value != prev_value:
             
             handler(bot, now_value[0], channel_id_telegram)
 
         prev_value = now_value
 
-        time.sleep(2)
+        time.sleep(150)
 
 
 def handler_message(bot, message, channel_id):
