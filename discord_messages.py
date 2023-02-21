@@ -15,8 +15,10 @@ def get_messages(token, channel_id):
         r = requests.get(f'https://discord.com/api/v9/channels/{channel_id}/messages?limit=3', headers=headers)
         data = r.json()
         return data
-        
-    except: return False
+
+    except:
+        time.sleep(20) 
+        return False
 
 def get_new_messages(bot, token, channel_id_discord, channel_id_telegram, handler):
 
@@ -36,7 +38,7 @@ def get_new_messages(bot, token, channel_id_discord, channel_id_telegram, handle
 
         prev_value = now_value
 
-        time.sleep(150)
+        time.sleep(5)
 
 
 def handler_message(bot, message, channel_id):
