@@ -215,30 +215,6 @@ def callback_query(call):
         edit_call_message(call, text=f"Готово! Участник был одобрен!")
 
 
-@bot.chat_join_request_handler()
-def handle_join_request(message):
-
-    from_user_id = message.from_user.id
-
-    user = database.get_current_user(from_user_id)
-
-    if check_user(user):
-        print(f'approve user {user.profile_id}')
-
-        bot.approve_chat_join_request(message.chat.id, message.from_user.id)
-    else:
-        bot.decline_chat_join_request(message.chat.id, message.from_user.id)
-
-        print(f'decline user {user.profile_id}')
-
-        bot.send_message(message.from_user.id, 'У тебя нет подписки для вступления в анал!')
-        
-
-# запуск всех потоков
-
-start_bot = lambda: bot.polling(none_stop=True)
-bot_thread = threading.Thread(target=start_bot)
-
 def ban_member_channels(user_id):
     for channel in database.get_data_channels():
         try:
@@ -261,6 +237,39 @@ def unban_member_channels(user_id):
         except:
             pass
 
+
+@bot.chat_join_request_handler()
+def handle_join_request(message):
+
+    from_user_id = message.from_user.id
+
+    user = database.get_current_user(from_user_id)
+
+    if check_user(user):
+        print(f'approve user {user.profile_id}')
+
+        unban_member_channels(message.from_user.id)
+
+        bot.approve_chat_join_request(message.chat.id, message.from_user.id)
+    else:
+
+        ban_member_channels(message.from_user.id)
+
+
+        bot.decline_chat_join_request(message.chat.id, message.from_user.id)
+
+        print(f'decline user {user.profile_id}')
+
+        bot.send_message(message.from_user.id, 'У тебя нет подписки для вступления в канал!')
+        
+
+# запуск всех потоков
+
+start_bot = lambda: bot.polling(none_stop=True)
+bot_thread = threading.Thread(target=start_bot)
+
+
+
 def start_auto_user_delete():
     while True:
         
@@ -274,7 +283,7 @@ def start_auto_user_delete():
                 ban_member_channels(int(user.profile_id))
                 
         
-        time.sleep(60)
+        time.sleep(86400)
 
 
 
