@@ -1,4 +1,4 @@
-from discord_messages import start_threads_discord, stop_threads_discord
+from discord_messages import handler_message
 import config, database
 import threading
 import time, datetime
@@ -7,21 +7,23 @@ import time, datetime
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+
+
 bot = telebot.TeleBot(config.token_telegram, parse_mode="html", threaded=False)
 
 
 # каналы в дискорде
 
-channel_discord_id = database.get_data_channels()
+import discum     
+bot_discord = discum.Client(token=config.token_discord, log=False)
 
-threads_discord = []
+all_active_channels = database.get_data_channels()
+
 
 def restart_threads():
 
-    global threads_discord
-    stop_threads_discord(threads_discord)
-    channel_discord_id = database.get_data_channels()
-    threads_discord = start_threads_discord(bot, channel_discord_id)
+    global all_active_channels
+    all_active_channels = database.get_data_channels()
 
 
 # создание клавиатуры
@@ -285,12 +287,22 @@ def start_auto_user_delete():
         
         time.sleep(86400)
 
+@bot_discord.gateway.command
+def handler_discord(resp):
+
+    if resp.event.message:
+        m = resp.parsed.auto()
+        
+        for channel in all_active_channels:
+            if channel['id_discord'] == m['channel_id']:
+                handler_message(bot, m, channel['id_telegram'])
 
 
+
+bot_discord_run = threading.Thread(target=bot_discord.gateway.run, args=())
 
 start_auto_user_delete_thread = threading.Thread(target=start_auto_user_delete)
 
-threads_discord = start_threads_discord(bot, channel_discord_id)
-
 start_auto_user_delete_thread.start()
 bot_thread.start()
+bot_discord_run.start()

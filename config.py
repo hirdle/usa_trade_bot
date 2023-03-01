@@ -1,4 +1,4 @@
-token_discord = "NjQzMTI0NjA1NjA2NjkwODM5.GFIVi8.I_AYp7z3osLQqK3Wo6WF6QEO1GH50hMiWAp49s"
+token_discord = "NjQzMTI0NjA1NjA2NjkwODM5.GM1wuE.LZOrS0YOe45ty3PN5H3qM7nGivy0CVHbXWLgX4"
 token_telegram = "6198189073:AAH_eNlASw4oHi1areIgI9M3KwaMGkYST1I"
 
 start_text = """✔️При подписке Вам станут доступны идеи и сигналы
